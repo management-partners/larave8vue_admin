@@ -32,6 +32,15 @@
             >Roles</router-link
           >
         </li>
+        <li class="nav-item">
+          <router-link
+            to="/products"
+            class="nav-link"
+            active-class="active"
+            aria-current="users"
+            >Products</router-link
+          >
+        </li>
       </ul>
     </div>
   </nav>
