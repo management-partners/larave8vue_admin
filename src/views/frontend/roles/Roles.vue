@@ -1,10 +1,10 @@
 <template>
-  <h2>Users List</h2>
+  <h2>Role List</h2>
   <div
     class="d-flet justify-content-between flet-wrap flet-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
   >
     <div class="btn-toolbar mb-2 mb-md-0">
-      <router-link to="/users/create" class="btn btn-sm btn-outline-primary"
+      <router-link to="/roles/create" class="btn btn-sm btn-outline-primary"
         >Add</router-link
       >
     </div>
@@ -15,31 +15,26 @@
         <tr>
           <th>#</th>
           <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
+          <th>Description</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(user, index) in users" :key="index">
-          <td>{{ user.id }}</td>
-          <td>{{ user.name }}</td>
-          <td>{{ user.email }}</td>
-          <td class="text-center">
-            {{ user.role.name }} <br />
-            <span style="color: green"> {{ user.role.description }}</span>
-          </td>
+        <tr v-for="role in roles" :key="role.id">
+          <td>{{ role.id }}</td>
+          <td>{{ role.name }}</td>
+          <td>{{ role.description }}</td>
           <td>
-            <div class="btn-group mr-2">
+            <div class="btn-group mr-2" v-if="role.name !== 'Admin'">
               <router-link
-                :to="`/users/${user.id}/edit`"
+                :to="`/roles/${role.id}/edit`"
                 class="btn btn-sm btn-outline-warning"
                 >Edit</router-link
               >
               <a
                 href="javascript:void(0)"
                 class="btn btn-sm btn-outline-danger"
-                @click="del(user.id)"
+                @click="del(role.id)"
                 >Delete</a
               >
             </div>
@@ -48,18 +43,6 @@
       </tbody>
     </table>
   </div>
-  <nav>
-    <ul class="pagination">
-      <li class="page-item">
-        <a href="javascript:void(0)" class="page-link" @click="previous"
-          >Previous</a
-        >
-      </li>
-      <li class="page-item">
-        <a href="javascript:void(0)" class="page-link" @click="next">Next</a>
-      </li>
-    </ul>
-  </nav>
 </template>
 
 <script lang="ts">
@@ -68,51 +51,34 @@ import axios from "axios";
 import { Entity } from "@/interfaces/Entity.ts";
 
 export default {
-  name: "Users",
+  name: "Roles",
 
   setup() {
-    const users = ref(null);
-    const page = ref(1);
+    const roles = ref(null);
     const lastPage = ref(0);
 
     // load data for every page
     const loadData = async () => {
-      const response = await axios.get(`users?page=${page.value}`);
+      const response = await axios.get("roles");
       if (response.status == 200) {
-        users.value = response.data.data;
+        roles.value = response.data.data;
         lastPage.value = response.data.meta.last_page;
       }
     };
     // page load is finished fill data
     onMounted(loadData);
 
-    //  previous button
-    const previous = async () => {
-      if (page.value == 1) return;
-      page.value--;
-      await loadData();
-    };
-
-    // next button
-    const next = async () => {
-      if (page.value == lastPage.value) return;
-      page.value++;
-      await loadData();
-    };
-
     // delete button
     const del = async (id: number) => {
       if (confirm("Are you sure you want to delete this record?")) {
-        await axios.delete(`users/${id}`);
-        users.value = users.value.filter((e: Entity) => e.id !== id);
+        await axios.delete(`roles/${id}`);
+        roles.value = roles.value.filter((e: Entity) => e.id !== id);
       }
     };
 
     // ouput action you must write here
     return {
-      users,
-      previous,
-      next,
+      roles,
       del,
     };
   },

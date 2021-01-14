@@ -17,46 +17,50 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <ul class="navbar-nav">
-     <li class="nav-item text-nowrap">
-        <router-link to="/profile" class="nav-link">{{userInfo?.name}}</router-link>
+      <li class="nav-item text-nowrap">
+        <router-link to="/profile" class="nav-link">{{
+          userInfo?.name
+        }}</router-link>
         <!-- <a class="nav-link" href="javascript:void(0)">{{userInfo?.name}}</a> -->
       </li>
       <li class="nav-item text-nowrap">
-        <a class="nav-link" href="javascript:void(0)" @click="logout">Sign out</a>
+        <a class="nav-link" href="javascript:void(0)" @click="logout"
+          >Sign out</a
+        >
       </li>
     </ul>
   </header>
 </template>
 <script>
-import { useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 export default {
   name: "Nav",
-  props:["userInfo"],
-  setup(){
-  const router = useRouter();
+  props: ["userInfo"],
+  setup() {
+    const router = useRouter();
 
-  const logout = () => {
-    localStorage.clear();
-    router.push("/login");
-  }
+    const logout = () => {
+      localStorage.clear();
+      router.push("/login");
+    };
 
     return {
-      logout
-    }
-  }
-}
+      logout,
+    };
+  },
+};
 </script>
 <style>
-  .navbar-nav {
-    width: 30%; 
-    display: inline;
-  }
-  header ul li{ 
-    width: 45%;
-    float:left;
-  }
-  header ul li:last-child{
-    text-align:right;
-    margin-right: 5px;
-  }
+.navbar-nav {
+  display: inline;
+  font-size: 1rem;
+  color: white;
+}
+header ul li {
+  float: left;
+  margin: 0px 10px;
+}
+header ul li:last-child {
+  text-align: right;
+}
 </style>

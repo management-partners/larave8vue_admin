@@ -1,5 +1,5 @@
 <template>
-  <Nav :userInfo="user"/>
+  <Nav :userInfo="user" />
   <div class="container-fluid">
     <div class="row">
       <Menu />
@@ -12,7 +12,7 @@
 <script>
 import Menu from "@/components/frontend/Menu.vue";
 import Nav from "@/components/frontend/Nav.vue";
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
@@ -22,7 +22,7 @@ export default {
     Menu,
     Nav,
   },
-  setup(){
+  setup() {
     const router = useRouter();
 
     const user = ref(null);
@@ -36,16 +36,12 @@ export default {
       }
     });
     return {
-      user
-    }
-  }
+      user,
+    };
+  },
 };
 </script>
 <style>
-body {
-  font-size: 0.875rem;
-}
-
 .feather {
   width: 16px;
   height: 16px;
@@ -142,8 +138,8 @@ body {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
 }
-h2{
-  margin:3% auto;
+h2 {
+  margin: 3% auto;
   text-align: center;
 }
 </style>
