@@ -14,27 +14,28 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Gallery</th>
           <th>Name</th>
           <th>Description</th>
           <th>Price</th>
           <th>Category</th>
-          <th>Gallery</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="pro in products" :key="pro.id">
           <td>{{ pro.id }}</td>
-          <td>{{ pro.name }}</td>
-          <td>{{ pro.description }}</td>
-          <td>{{ pro.price }}</td>
-          <td>{{ pro.cate.name }}</td>
           <td>
             <div v-for="(img, index) in pro.gallery" :key="img.id">
               <img :src="img.path" alt="" style="width: 100px" />
               <hr v-if="index < pro.gallery.length - 1" />
             </div>
           </td>
+          <td>{{ pro.name }}</td>
+          <td>{{ pro.description }}</td>
+          <td>{{ pro.price }}</td>
+          <td>{{ pro.cate.name }}</td>
+
           <td>
             <div class="btn-group mr-2">
               <router-link
@@ -54,37 +55,25 @@
       </tbody>
     </table>
   </div>
-  <nav>
-    <ul class="pagination">
-      <li class="page-item">
-        <a href="javascript:void(0)" class="page-link" @click="previous"
-          >Previous</a
-        >
-      </li>
-      <li class="page-item">
-        <a href="javascript:void(0)" class="page-link" @click="next">Next</a>
-      </li>
-    </ul>
-  </nav>
+  <Paginator :lastPage="lastPage" @page-change="loadData($event)" />
 </template>
 
 <script lang="ts">
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { Entity } from "@/interfaces/Entity.ts";
+import Paginator from "@/components/frontend/Paginator.vue";
 
 export default {
   name: "Products",
 
   setup() {
     const products = ref(null);
-    const page = ref(1);
     const lastPage = ref(0);
 
     // load data for every page
-    const loadData = async () => {
-      const response = await axios.get(`products?page=${page.value}`);
-      console.log(response);
+    const loadData = async (page = 1) => {
+      const response = await axios.get(`products?page=${page}`);
 
       if (response.status == 200) {
         products.value = response.data.data;
@@ -93,20 +82,6 @@ export default {
     };
     // page load is finished fill data
     onMounted(loadData);
-
-    //  previous button
-    const previous = async () => {
-      if (page.value == 1) return;
-      page.value--;
-      await loadData();
-    };
-
-    // next button
-    const next = async () => {
-      if (page.value == lastPage.value) return;
-      page.value++;
-      await loadData();
-    };
 
     // delete button
     const del = async (id: number) => {
@@ -119,10 +94,13 @@ export default {
     // ouput action you must write here
     return {
       products,
-      previous,
-      next,
       del,
+      lastPage,
+      loadData,
     };
+  },
+  components: {
+    Paginator,
   },
 };
 </script>
