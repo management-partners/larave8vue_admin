@@ -45,6 +45,7 @@
           required
           autofocus
           v-model="description"
+          rows="5"
         />
       </div>
     </div>
@@ -62,16 +63,39 @@
         />
       </div>
     </div>
+    <div class="form-group row my-col">
+      <label for="password" class="col-sm-3 col-form-label">Images</label>
+      <div class="col-sm-9">
+        <div
+          class="col-sm-3 float-start"
+          v-for="(old, index) in currentImages"
+          :key="old.id"
+          style="margin-left: 5px; position: relative"
+        >
+          <img :src="old.path" :alt="old.name" srcset="" style="width: 100px" />
+          <a
+            href="javascript:void(0)"
+            class="btn btn-danger"
+            style="
+              position: absolute;
+              top: 0px;
+              display: block;
+              right: 0px;
+              opacity: 0.5;
+            "
+            @click="deleteOldImg(index)"
+            >X</a
+          >
+        </div>
+      </div>
+    </div>
 
     <div
       class="form-group row my-col"
       v-for="(img, index) in images"
       :key="index"
     >
-      <label for="image" class="col-sm-3 col-form-label" v-if="index == 0"
-        >Images</label
-      >
-      <label for="image" class="col-sm-3 col-form-label" v-else></label>
+      <label for="image" class="col-sm-3 col-form-label"></label>
       <div class="col-sm-9">
         <input
           type="file"
@@ -106,9 +130,7 @@
     <div class="form-group row my-col">
       <label for="passwordConfirm" class="col-sm-3 col-form-label"></label>
       <div class="col-sm-9">
-        <button class="w-100 btn btn-lg btn-primary" type="submit">
-          Create
-        </button>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Edit</button>
       </div>
     </div>
   </form>
@@ -116,10 +138,11 @@
 <script lang="ts">
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import { Product } from "@/classes/product";
 
 export default {
-  name: "ProductsCreate",
+  name: "ProductsEdit",
   setup() {
     const name = ref(null);
     const description = ref(null);
@@ -128,12 +151,23 @@ export default {
     const cateId = ref(null);
     const router = useRouter();
     const images = ref([{ id: 0 }]);
+    const currentImages = ref([]);
+    const { params } = useRoute();
+    const productDetail = ref(null);
     const data = new FormData();
     //  load role for screen
     onMounted(async () => {
-      const response = await axios.get("categories");
+      const resCate = await axios.get("categories");
+      categories.value = resCate.data.data;
 
-      categories.value = response.data.data;
+      const resProduct = await axios.get(`products/${params.id}`);
+
+      const pro: Product = resProduct.data.data;
+      name.value = pro.name;
+      description.value = pro.description;
+      cateId.value = pro.cate.name;
+      price.value = pro.price;
+      currentImages.value = pro.gallery;
     });
 
     const submit = async () => {
@@ -161,6 +195,10 @@ export default {
     const changeImg = (files: FileList) => {
       data.append("images[]", files.item(0));
     };
+    const deleteOldImg = (index: number) => {
+      currentImages.value.splice(1, 1);
+    };
+
     return {
       submit,
       name,
@@ -172,6 +210,8 @@ export default {
       removeRowImg,
       categories,
       changeImg,
+      currentImages,
+      deleteOldImg,
     };
   },
 };

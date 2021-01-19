@@ -10,6 +10,7 @@
     </div>
   </div>
   <div class="table-responsive">
+    <Paginator :lastPage="lastPage" @page-change="loadData($event)" />
     <table class="table table-striped table-sm">
       <thead>
         <tr>
