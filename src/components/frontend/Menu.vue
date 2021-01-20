@@ -28,7 +28,7 @@
             to="/roles"
             class="nav-link"
             active-class="active"
-            aria-current="users"
+            aria-current="roles"
             >Roles</router-link
           >
         </li>
@@ -37,8 +37,17 @@
             to="/products"
             class="nav-link"
             active-class="active"
-            aria-current="users"
+            aria-current="products"
             >Products</router-link
+          >
+        </li>
+        <li class="nav-item">
+          <router-link
+            to="/orders"
+            class="nav-link"
+            active-class="active"
+            aria-current="orders"
+            >Orders</router-link
           >
         </li>
       </ul>
