@@ -1,10 +1,45 @@
-<template> 
+<template>
   <h2>Dashboard</h2>
-  
+  <h3>Daily Sales</h3>
+  <div id="chart"></div>
 </template>
-<script> 
+<script>
+import { onMounted } from "vue";
+import axios from "axios";
+import * as c3 from "c3";
+
 export default {
   name: "Home",
+  setup() {
+    onMounted(async () => {
+      const chart = c3.generate({
+        bindto: "#chart",
+        data: {
+          x: "x",
+          columns: [["x"], ["Sales"]],
+          types: {
+            Sales: "bar",
+          },
+        },
+        axis: {
+          x: {
+            type: "timeseries",
+            tick: {
+              format: "%m/%d",
+            },
+          },
+        },
+      });
+      const response = await axios.get("chart");
+      const records = response.data.data;
+      chart.load({
+        columns: [
+          ["x", ...records.map((d) => d.date)],
+          ["Sales", ...records.map((s) => s.total)],
+        ],
+      });
+    });
+  },
 };
 </script>
 <style>

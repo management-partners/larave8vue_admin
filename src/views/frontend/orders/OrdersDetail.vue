@@ -15,8 +15,8 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Images</th>
+                    <th>Quantity</th>
                     <th>Price</th>
-                    <th>Qunatity</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -36,8 +36,13 @@
                         style="width: 100px"
                       />
                     </td>
-                    <td>{{ or.price }}</td>
                     <td>{{ or.quantity }}</td>
+                    <td>{{ or.price }}</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td colspan="4">Total</td>
+                    <td>{{ totalQuantity }}</td>
+                    <td>{{ total }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -46,7 +51,7 @@
           <div class="modal-footer justify-content-center">
             <button
               type="button"
-              class="btn btn-info col-sm-10"
+              class="btn btn-info col-sm-12"
               data-dismiss="modal"
               @click="$emit('close')"
             >
@@ -59,14 +64,34 @@
   </transition>
 </template>
 <script lang="ts">
+import { ref, onMounted } from "vue";
 export default {
   name: "OrdersDetail",
   props: ["OrderItems"],
+  setup(props: any) {
+    const totalQuantity = ref(0);
+    const total = ref(0);
+    onMounted(() => {
+      props.OrderItems.forEach((el: any) => {
+        totalQuantity.value += el.quantity;
+        total.value += el.quantity * el.price;
+      });
+    });
+    return {
+      totalQuantity,
+      total,
+    };
+  },
 };
 </script>
 <style>
 .modal-dialog {
   max-width: 90% !important;
+}
+.total-row {
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+  color: red !important;
 }
 .modal-mask {
   position: fixed;

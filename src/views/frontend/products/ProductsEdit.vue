@@ -153,7 +153,6 @@ export default {
     const images = ref([{ id: 0 }]);
     const currentImages = ref([]);
     const { params } = useRoute();
-    const productDetail = ref(null);
     const data = new FormData();
     //  load role for screen
     onMounted(async () => {
@@ -196,7 +195,7 @@ export default {
       data.append("images[]", files.item(0));
     };
     const deleteOldImg = (index: number) => {
-      currentImages.value.splice(1, 1);
+      currentImages.value.splice(index, 1);
     };
 
     return {

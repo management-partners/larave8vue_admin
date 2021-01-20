@@ -4,7 +4,10 @@
     class="d-flet justify-content-between flet-wrap flet-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
   >
     <div class="btn-toolbar mb-2 mb-md-0">
-      <a href="javascript:void(0)" class="btn btn-sm btn-outline-primary"
+      <a
+        href="javascript:void(0)"
+        class="btn btn-sm btn-outline-primary"
+        @click="ExportCSV"
         >Export CSV</a
       >
     </div>
@@ -19,6 +22,8 @@
           <th>Email</th>
           <th>Address</th>
           <th>Tel <br />Mobile</th>
+          <th>Total Quantity</th>
+          <th>Total</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -38,11 +43,26 @@
             {{ or.mobile }}
           </td>
           <td>
+            {{ or.total_quantity }}
+          </td>
+          <td>
+            {{ or.total }}
+          </td>
+          <td>
             <div class="btn-group mr-2">
               <a
                 href="javascript:void(0)"
                 class="btn btn-sm btn-outline-success"
                 @click="viewDetail(or.id)"
+                v-if="or.total_quantity > 0"
+                title="Orders Detail"
+                >View</a
+              >
+              <a
+                href="javascript:void(0)"
+                class="btn btn-sm btn-outline-warning"
+                v-else
+                title="Orders Detail Is Empty"
                 >View</a
               >
               <OrderDetailView
@@ -88,6 +108,7 @@ export default {
 
       if (response.status == 200) {
         orders.value = response.data.data;
+
         lastPage.value = response.data.meta.last_page;
       }
     };
@@ -110,6 +131,16 @@ export default {
         }
       });
     };
+
+    const ExportCSV = async () => {
+      const response = await axios.get("exportcsv", { responseType: "blob" });
+      const blob = new Blob([response.data], { type: "text/csv" });
+      const downloadUrl = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "orders.csv";
+      link.click();
+    };
     // ouput action you must write here
     return {
       orders,
@@ -119,6 +150,7 @@ export default {
       viewDetail,
       showModal,
       orderItem,
+      ExportCSV,
     };
   },
   components: {
