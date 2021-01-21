@@ -1,17 +1,46 @@
 <template>
   <h2>Dashboard</h2>
   <h3>Daily Sales</h3>
-  <div id="chart"></div>
+  <div class="container">
+    <div class="row col-sm-3">
+      <select
+        id="year"
+        name="year"
+        class="form-control"
+        v-model="year"
+        @change="filterChart"
+        autofocus
+      >
+        <option v-for="(y, index) in lstYear" :key="index" :value="y">
+          {{ y }}
+        </option>
+      </select>
+    </div>
+    <br />
+    <div class="row">
+      <div id="chart"></div>
+    </div>
+  </div>
 </template>
 <script>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
 import * as c3 from "c3";
 
 export default {
   name: "Home",
   setup() {
-    onMounted(async () => {
+    const year = ref(new Date().getFullYear());
+    const lstYear = ref([]);
+
+    const loadAllYear = async () => {
+      const response = await axios.get("chartallyear");
+      response.data.forEach((el) => {
+        lstYear.value.push(el.date);
+      });
+    };
+
+    const drawChart = async () => {
       const chart = c3.generate({
         bindto: "#chart",
         data: {
@@ -25,20 +54,45 @@ export default {
           x: {
             type: "timeseries",
             tick: {
-              format: "%m/%d",
+              format: "%Y/%m/%d",
             },
           },
         },
       });
-      const response = await axios.get("chart");
+      const response = await axios.get(`chartyear/${year.value}`);
       const records = response.data.data;
-      chart.load({
-        columns: [
-          ["x", ...records.map((d) => d.date)],
-          ["Sales", ...records.map((s) => s.total)],
-        ],
-      });
+      if (records != null) {
+        chart.load({
+          columns: [
+            ["x", ...records.map((d) => d.date)],
+            ["Sales", ...records.map((s) => s.total)],
+          ],
+        });
+      } else {
+        chart.load({
+          columns: [
+            ["x", 0],
+            ["Sales", 0],
+          ],
+        });
+      }
+    };
+
+    const filterChart = () => {
+      drawChart();
+    };
+
+    onMounted(() => {
+      loadAllYear();
+      drawChart();
     });
+    return {
+      lstYear,
+      year,
+      loadAllYear,
+      filterChart,
+      drawChart,
+    };
   },
 };
 </script>

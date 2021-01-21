@@ -18,7 +18,7 @@
     </button>
     <ul class="navbar-nav">
       <li class="nav-item text-nowrap">
-        <router-link to="/profile" class="nav-link">{{
+        <router-link to="/users/profile" class="nav-link">{{
           userInfo?.name
         }}</router-link>
         <!-- <a class="nav-link" href="javascript:void(0)">{{userInfo?.name}}</a> -->
@@ -32,12 +32,17 @@
   </header>
 </template>
 <script>
+import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 export default {
   name: "Nav",
-  props: ["userInfo"],
+  // props: ["userInfo"],
   setup() {
     const router = useRouter();
+
+    const store = useStore();
+    const userInfo = computed(() => store.state.user);
 
     const logout = () => {
       localStorage.clear();
@@ -46,6 +51,7 @@ export default {
 
     return {
       logout,
+      userInfo,
     };
   },
 };

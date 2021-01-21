@@ -3,15 +3,20 @@ import Register from '@/views/shares/Register.vue';
 import Login from '@/views/shares/Login.vue';
 import Template from '@/views/frontend/Template.vue';
 import Dashboard from '@/views/frontend/dashboard/Dashboard.vue';
+
 import Users from '@/views/frontend/users/Users.vue';
 import UsersCreate from '@/views/frontend/users/UsersCreate.vue';
 import UsersEdit from '@/views/frontend/users/UsersEdit.vue';
+import Profile from '@/views/frontend/users/Profile.vue';
+
 import Roles from '@/views/frontend/roles/Roles.vue';
 import RolesCreate from '@/views/frontend/roles/RolesCreate.vue';
 import RolesEdit from '@/views/frontend/roles/RolesEdit.vue';
+
 import Products from '@/views/frontend/products/Products.vue';
 import ProductsCreate from '@/views/frontend/products/ProductsCreate.vue';
 import ProductsEdit from '@/views/frontend/products/ProductsEdit.vue';
+
 import Orders from '@/views/frontend/orders/Orders.vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -38,6 +43,11 @@ const routes: Array<RouteRecordRaw> = [
         path: '/users/create',
         component: UsersCreate,
         name: "UsersCreate",
+      },
+      {
+        path: '/users/profile',
+        component: Profile,
+        name: "Profile",
       },
       {
         path: '/users/:id/edit',

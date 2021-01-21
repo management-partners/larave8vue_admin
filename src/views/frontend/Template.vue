@@ -1,10 +1,11 @@
 <template>
-  <Nav :userInfo="user" />
+  <!-- <Nav :userInfo="user" /> -->
+  <Nav />
   <div class="container-fluid">
     <div class="row">
       <Menu />
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <router-view />
+        <router-view v-if="user" />
       </main>
     </div>
   </div>
@@ -14,7 +15,9 @@ import Menu from "@/components/frontend/Menu.vue";
 import Nav from "@/components/frontend/Nav.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+
 import axios from "axios";
+import { useStore } from "vuex";
 
 export default {
   name: "Home",
@@ -26,11 +29,14 @@ export default {
     const router = useRouter();
 
     const user = ref(null);
+    const store = useStore();
 
     onMounted(async () => {
       try {
         const response = await axios.get("user");
         user.value = response.data.data;
+        // use store
+        await store.dispatch("setUser", response.data.data);
       } catch (error) {
         await router.push("/login");
       }
