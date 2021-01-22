@@ -106,6 +106,7 @@
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import { useStore } from "vuex";
+import { User } from "@/classes/user";
 
 export default {
   name: "Profile",
@@ -130,7 +131,7 @@ export default {
 
       // use store data
 
-      const user = computed(() => store.state.user);
+      const user = computed(() => store.state.User.user);
 
       name.value = user.value.name;
       email.value = user.value.email;
@@ -145,7 +146,12 @@ export default {
         email: email.value,
         roleId: roleId.value,
       });
-      await store.dispatch("setUser", response.data);
+      const u: User = response.data.data;
+
+      await store.dispatch(
+        "User/setUser",
+        new User(u.id, u.name, u.email, u.role, u.permission)
+      );
     };
 
     const submitPassword = async () => {

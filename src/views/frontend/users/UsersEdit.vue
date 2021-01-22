@@ -114,8 +114,6 @@ export default {
       const user: User = userDetail.data.data;
       name.value = user.name;
       email.value = user.email;
-      password.value = user.password;
-      passwordConfirm.value = user.password_confirm;
       roleId.value = user.role.id;
     });
 

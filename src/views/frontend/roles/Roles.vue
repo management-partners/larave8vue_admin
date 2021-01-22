@@ -4,7 +4,10 @@
     class="d-flet justify-content-between flet-wrap flet-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
   >
     <div class="btn-toolbar mb-2 mb-md-0">
-      <router-link to="/roles/create" class="btn btn-sm btn-outline-primary"
+      <router-link
+        to="/roles/create"
+        class="btn btn-sm btn-outline-primary"
+        v-if="authenticatedUser.canEdit('roles')"
         >Add</router-link
       >
     </div>
@@ -29,12 +32,14 @@
               <router-link
                 :to="`/roles/${role.id}/edit`"
                 class="btn btn-sm btn-outline-warning"
+                v-if="authenticatedUser.canEdit('roles')"
                 >Edit</router-link
               >
               <a
                 href="javascript:void(0)"
                 class="btn btn-sm btn-outline-danger"
                 @click="del(role.id)"
+                v-if="authenticatedUser.canDelete('roles')"
                 >Delete</a
               >
             </div>
@@ -46,9 +51,10 @@
 </template>
 
 <script lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
-import { Entity } from "@/interfaces/Entity.ts";
+import { useStore } from "vuex";
+import { Entity } from "@/interfaces/entity";
 
 export default {
   name: "Roles",
@@ -56,6 +62,8 @@ export default {
   setup() {
     const roles = ref(null);
     const lastPage = ref(0);
+    const store = useStore();
+    const authenticatedUser = computed(() => store.state.User.user);
 
     // load data for every page
     const loadData = async () => {
@@ -80,6 +88,7 @@ export default {
     return {
       roles,
       del,
+      authenticatedUser,
     };
   },
 };

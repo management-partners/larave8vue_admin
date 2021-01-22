@@ -2,6 +2,7 @@ import { Entity } from "@/interfaces/entity";
 import { Gallery } from "./gallery";
 
 export class OrderDetail implements Entity {
+
     id: number
     product_name: string
     product_description: string

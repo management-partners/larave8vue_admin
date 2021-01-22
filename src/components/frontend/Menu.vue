@@ -20,6 +20,7 @@
             class="nav-link"
             active-class="active"
             aria-current="users"
+            v-if="user.canView('users')"
             >Users</router-link
           >
         </li>
@@ -29,6 +30,7 @@
             class="nav-link"
             active-class="active"
             aria-current="roles"
+            v-if="user.canView('roles')"
             >Roles</router-link
           >
         </li>
@@ -38,6 +40,7 @@
             class="nav-link"
             active-class="active"
             aria-current="products"
+            v-if="user.canView('products')"
             >Products</router-link
           >
         </li>
@@ -47,6 +50,7 @@
             class="nav-link"
             active-class="active"
             aria-current="orders"
+            v-if="user.canView('orders')"
             >Orders</router-link
           >
         </li>
@@ -54,8 +58,18 @@
     </div>
   </nav>
 </template>
-<script>
+<script lang="ts">
+import { computed } from "vue";
+import { useStore } from "vuex";
+
 export default {
   name: "Menu",
+  setup() {
+    const store = useStore();
+    const user = computed(() => store.state.User.user);
+    return {
+      user,
+    };
+  },
 };
 </script>

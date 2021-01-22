@@ -5,12 +5,12 @@
     <div class="row">
       <Menu />
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <router-view v-if="user" />
+        <router-view v-if="user?.id" />
       </main>
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import Menu from "@/components/frontend/Menu.vue";
 import Nav from "@/components/frontend/Nav.vue";
 import { onMounted, ref } from "vue";
@@ -18,6 +18,7 @@ import { useRouter } from "vue-router";
 
 import axios from "axios";
 import { useStore } from "vuex";
+import { User } from "@/classes/user";
 
 export default {
   name: "Home",
@@ -34,9 +35,14 @@ export default {
     onMounted(async () => {
       try {
         const response = await axios.get("user");
-        user.value = response.data.data;
+        const u: User = response.data.data;
         // use store
-        await store.dispatch("setUser", response.data.data);
+        await store.dispatch(
+          "User/setUser",
+          new User(u.id, u.name, u.email, u.role, u.permission)
+        );
+
+        user.value = u;
       } catch (error) {
         await router.push("/login");
       }

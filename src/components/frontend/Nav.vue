@@ -31,7 +31,7 @@
     </ul>
   </header>
 </template>
-<script>
+<script lang="ts">
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -42,7 +42,7 @@ export default {
     const router = useRouter();
 
     const store = useStore();
-    const userInfo = computed(() => store.state.user);
+    const userInfo = computed(() => store.state.User.user);
 
     const logout = () => {
       localStorage.clear();

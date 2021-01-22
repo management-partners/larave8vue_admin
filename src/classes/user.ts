@@ -6,17 +6,23 @@ export class User implements Entity {
     name: string;
     email: string;
     role: Role;
-    password: string;
-    password_confirm: string;
-    permissions: string[];
+    permission: string[];
 
-    constructor(id: number = 0, name: string = '', email: string = '', role: Role = new Role, password: string = '', password_confirm: string = '', permission: string[] = []) {
+    constructor(id: number = 0, name: string = '', email: string = '', role: Role = new Role(), permission: string[] = []) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
-        this.password = password;
-        this.password_confirm = password_confirm;
-        this.permissions = permission;
+        this.permission = permission;
+    }
+
+    canView(page: string) {
+        return this.permission.some(p => p === `view_${page}`)
+    }
+    canEdit(page: string) {
+        return this.permission.some(p => p === `edit_${page}`)
+    }
+    canDelete(page: string) {
+        return this.permission.some(p => p === `view_${page}`)
     }
 }

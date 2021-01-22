@@ -75,6 +75,7 @@
                 href="javascript:void(0)"
                 class="btn btn-sm btn-outline-danger"
                 @click="del(or.id)"
+                v-if="authenticatedUser.canDelete('')"
                 >Delete</a
               >
             </div>
@@ -86,13 +87,14 @@
   <Paginator :lastPage="lastPage" @page-change="loadData($event)" />
 </template>
 <script lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import { Entity } from "@/interfaces/Entity.ts";
 import Paginator from "@/components/frontend/Paginator.vue";
 import OrderDetailView from "@/views/frontend/orders/OrdersDetail.vue";
 
 import { Order } from "@/classes/order.ts";
+import { useStore } from "vuex";
 
 export default {
   name: "Orders",
@@ -102,6 +104,9 @@ export default {
     const orders = ref(null);
     const orderItem = ref([]);
     const lastPage = ref(0);
+    const store = useStore();
+    const authenticatedUser = computed(() => store.state.User.user);
+
     // load data for every page
     const loadData = async (page = 1) => {
       const response = await axios.get(`orders?page=${page}`);
@@ -134,7 +139,7 @@ export default {
 
     const ExportCSV = async () => {
       const response = await axios.get("exportcsv", { responseType: "blob" });
-      const blob = new Blob([response.data], { type: "text/csv" });
+      // const blob = new Blob([response.data], { type: "text/csv" });
       const downloadUrl = window.URL.createObjectURL(response.data);
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -151,6 +156,7 @@ export default {
       showModal,
       orderItem,
       ExportCSV,
+      authenticatedUser,
     };
   },
   components: {

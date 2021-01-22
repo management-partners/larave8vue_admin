@@ -65,6 +65,7 @@
 </template>
 <script lang="ts">
 import { ref, onMounted } from "vue";
+import { OrderDetail } from "@/classes/orderDetail";
 export default {
   name: "OrdersDetail",
   props: ["OrderItems"],
@@ -72,7 +73,7 @@ export default {
     const totalQuantity = ref(0);
     const total = ref(0);
     onMounted(() => {
-      props.OrderItems.forEach((el: any) => {
+      props.OrderItems.forEach((el: OrderDetail) => {
         totalQuantity.value += el.quantity;
         total.value += el.quantity * el.price;
       });
